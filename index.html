@@ -1,1 +1,74 @@
-test3
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Meraki Firewall Rule Creator</title>
+  </head>
+  <body>
+    <h1>Meraki Firewall Rule Creator</h1>
+    <form>
+      <label for="comment">Comment:</label>
+      <input type="text" name="comment" id="comment"><br><br>
+      <label for="policy">Policy:</label>
+      <select name="policy" id="policy">
+        <option value="allow">Allow</option>
+        <option value="deny">Deny</option>
+      </select><br><br>
+      <label for="protocol">Protocol:</label>
+      <input type="text" name="protocol" id="protocol"><br><br>
+      <label for="srcPort">Source Port:</label>
+      <input type="text" name="srcPort" id="srcPort"><br><br>
+      <label for="dstPort">Destination Port:</label>
+      <input type="text" name="dstPort" id="dstPort"><br><br>
+      <label for="srcCidr">Source CIDR:</label>
+      <input type="text" name="srcCidr" id="srcCidr"><br><br>
+      <label for="destCidr">Destination CIDR:</label>
+      <input type="text" name="destCidr" id="destCidr"><br><br>
+      <button type="button" onclick="createFirewallRule()">Create Firewall Rule</button>
+    </form>
+    <br><br>
+    <div id="results"></div>
+
+    <script>
+      function createFirewallRule() {
+        // Get the values of the form fields
+        var comment = document.getElementById("comment").value;
+        var policy = document.getElementById("policy").value;
+        var protocol = document.getElementById("protocol").value;
+        var srcPort = document.getElementById("srcPort").value;
+        var dstPort = document.getElementById("dstPort").value;
+        var srcCidr = document.getElementById("srcCidr").value;
+        var destCidr = document.getElementById("destCidr").value;
+
+        // Define the firewall rule as a dictionary
+        var firewallRule = {
+          "comment": comment,
+          "policy": policy,
+          "protocol": protocol,
+          "srcPort": srcPort,
+          "dstPort": dstPort,
+          "srcCidr": srcCidr,
+          "destCidr": destCidr
+        };
+
+        // Define the API endpoint and headers
+        var endpoint = "/networks/YOUR_NETWORK_ID/l3FirewallRules";
+        var headers = {
+          "Content-Type": "application/json",
+          "X-Cisco-Meraki-API-Key": "YOUR_API_KEY"
+        };
+
+        // Send the API request to create the firewall rule
+        fetch(endpoint, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify([firewallRule])
+        })
+        .then(response => {
+          if (response.status == 201) {
+            // Display a success message if the firewall rule was created successfully
+            document.getElementById("results").innerHTML = "Firewall rule created successfully";
+          } else {
+            // Display an error message if the firewall rule creation failed
+            document.getElementById("results").innerHTML = "Error creating firewall rule";
+          }
